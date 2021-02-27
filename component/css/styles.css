@@ -13,3 +13,19 @@
     margin-top: 10px;
     min-height: 100px;
 }
+
+.tag {
+    display: inline-block;
+    box-shadow: 0 0 3px lightgray;
+    padding: 5px;
+    margin: 5px;
+}
+
+.tag > img {
+    width: 8px;
+    cursor: pointer;
+}
+
+.validate {
+    border: 3px solid red;
+}

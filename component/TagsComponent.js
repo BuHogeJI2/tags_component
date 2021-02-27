@@ -1,7 +1,35 @@
 class TagsComponent {
 
-    constructor(initialTags = []) {
-        this.tags = initialTags;
+    constructor() {
+        this.tags = [];
+        this.showingTags = [];
+        this.crossImgUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Flat_cross_icon.svg/1200px-Flat_cross_icon.svg.png'
+    }
+
+    showTags(block) {
+        if (this.tags.length !== this.showingTags.length) {
+            const newTags = this.tags.slice(this.showingTags.length);
+            newTags.forEach(tag => {
+                block.innerHTML += `<div class="tag">${tag} <img src="${this.crossImgUrl}" alt=""></div>`
+                this.showingTags.push(tag);
+            })
+        }
+    }
+
+    handleAddClick() {
+        const input = document.querySelector('.input');
+        const tagsBlock = document.querySelector('.tags_block');
+        const inputTags = input.value.split(' ');
+
+        inputTags.forEach(tag => tag && this.tags.push(tag));
+        this.showTags(tagsBlock);
+        input.value = '';
+
+    }
+
+    listener() {
+        const btn = document.querySelector('.component_btn');
+        btn.addEventListener('click', this.handleAddClick.bind(this));
     }
 
     renderInput() {
@@ -16,7 +44,10 @@ class TagsComponent {
         return `<div class="tags_block"></div>`
     }
 
-    mount = (element) => element.innerHTML = this.render();
+    mount = (element) => {
+        element.innerHTML = this.render();
+        this.listener();
+    }
 
     render() {
         return `<div class="component_block">

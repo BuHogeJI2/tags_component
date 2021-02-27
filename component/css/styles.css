@@ -1,0 +1,15 @@
+.component_block {
+    border: 1px solid black;
+    padding: 10px;
+    width: 250px;
+}
+
+.component_btn {
+    float: right;
+}
+
+.tags_block {
+    border: 1px solid black;
+    margin-top: 10px;
+    min-height: 100px;
+}

@@ -13,6 +13,14 @@ class TagsComponent {
         this.tags = value;
     }
 
+    get getLocalStorage() {
+        return localStorage.getItem('tags');
+    }
+
+    set setLocalStorage(value) {
+        localStorage.setItem('tags', value);
+    }
+
     addTag(tag) {
         this.tags.push(tag);
     }
@@ -47,9 +55,30 @@ class TagsComponent {
         }
     }
 
+    handleReadOnlyMode(event) {
+        event.target.checked ? this.changeReadOnlyMode(true) : this.changeReadOnlyMode(false)
+     }
+
+    changeReadOnlyMode(mode) {
+        const btn = document.querySelector('.component_btn');
+        const input = document.querySelector('.input');
+
+        if (mode) {
+            btn.disabled = true;
+            input.disabled = true;
+        } else {
+            btn.disabled = false;
+            input.disabled = false;
+        }
+    }
+
     listener() {
         const btn = document.querySelector('.component_btn');
+        const readOnlyCheckBox = document.querySelector('.read_only');
+
+        readOnlyCheckBox.addEventListener('change', this.handleReadOnlyMode.bind(this));
         btn.addEventListener('click', this.handleAddBtnClick.bind(this));
+
         document.addEventListener('click', this.handleDeleteBtnClick.bind(this));
     }
 
@@ -65,6 +94,10 @@ class TagsComponent {
         return `<div class="tags_block"></div>`
     }
 
+    renderReadOnlyCheckBox() {
+        return `<input type="checkbox" name="read_only" class="read_only"><span class="read_only_span">Read Only</span>`
+    }
+
     mount = (element) => {
         element.innerHTML = this.render();
         this.listener();
@@ -76,6 +109,7 @@ class TagsComponent {
                     ${this.renderInput()}
                     ${this.renderBtn()}
                     ${this.renderTagsBlock()}
+                    ${this.renderReadOnlyCheckBox()}
                     
                 </div>`
     }

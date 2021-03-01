@@ -6,7 +6,7 @@
 
 #### This component consists of:
     - Input for adding tags;
-    - Btn add for adding text from input into tags;
+    - Btn "add", for adding text from input into tags;
     - List of the tags with cross icon for removing tag;
     
 #### This component can: 

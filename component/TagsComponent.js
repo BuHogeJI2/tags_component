@@ -1,8 +1,10 @@
 class TagsComponent {
 
-    constructor() {
-        this.tags = [];
-        this.crossImgUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Flat_cross_icon.svg/1200px-Flat_cross_icon.svg.png'
+    constructor(crossImg, componentBlockId, initialTags = []) {
+        this.tags = initialTags;
+        this.crossImgUrl = crossImg;
+        this.componentBlockId = componentBlockId;
+        this.componentBlock = null;
     }
 
     get getTags() {
@@ -22,7 +24,7 @@ class TagsComponent {
     }
 
     addTag(tag) {
-        this.tags.push(tag);
+        !this.tags.includes(tag) && this.tags.push(tag);
     }
 
     deleteTag(removingTag) {
@@ -31,7 +33,7 @@ class TagsComponent {
 
     renderTags() {
 
-        const block = document.querySelector('.tags_block');
+        const block = this.componentBlock.querySelector('.tags_block');
         const tagDiv = (tag) => `<div class="tag">${tag} <img name="${tag}" class="cross_img" src="${this.crossImgUrl}"></div>`
 
         block.innerHTML = '';
@@ -39,7 +41,7 @@ class TagsComponent {
     }
 
     handleAddBtnClick() {
-        const input = document.querySelector('.input');
+        const input = this.componentBlock.querySelector('.input');
         const inputTags = input.value.split(' ');
 
         inputTags.forEach(tag => tag && this.addTag(tag));
@@ -56,30 +58,24 @@ class TagsComponent {
     }
 
     handleReadOnlyMode(event) {
-        event.target.checked ? this.changeReadOnlyMode(true) : this.changeReadOnlyMode(false)
+        this.changeReadOnlyMode(!!event.target.checked);
      }
 
     changeReadOnlyMode(mode) {
-        const btn = document.querySelector('.component_btn');
-        const input = document.querySelector('.input');
+        const btn = this.componentBlock.querySelector('.component_btn');
+        const input = this.componentBlock.querySelector('.input');
 
-        if (mode) {
-            btn.disabled = true;
-            input.disabled = true;
-        } else {
-            btn.disabled = false;
-            input.disabled = false;
-        }
+        btn.disabled = !!mode;
+        input.disabled = !!mode;
     }
 
     listener() {
-        const btn = document.querySelector('.component_btn');
-        const readOnlyCheckBox = document.querySelector('.read_only');
+        const btn = this.componentBlock.querySelector('.component_btn');
+        const readOnlyCheckBox = this.componentBlock.querySelector('.read_only');
 
         readOnlyCheckBox.addEventListener('change', this.handleReadOnlyMode.bind(this));
         btn.addEventListener('click', this.handleAddBtnClick.bind(this));
-
-        document.addEventListener('click', this.handleDeleteBtnClick.bind(this));
+        this.componentBlock.addEventListener('click', this.handleDeleteBtnClick.bind(this));
     }
 
     renderInput() {
@@ -99,21 +95,26 @@ class TagsComponent {
     }
 
     mount = (element) => {
-        element.innerHTML = this.render();
+        element.innerHTML += this.render();
+        this.componentBlock = document.getElementById(`${this.componentBlockId}`);
         this.listener();
     }
 
     render() {
-        return `<div class="component_block">
+        return (
+            `<div id="${this.componentBlockId}" class="component_block">
 
-                    ${this.renderInput()}
-                    ${this.renderBtn()}
-                    ${this.renderTagsBlock()}
-                    ${this.renderReadOnlyCheckBox()}
+                ${this.renderInput()}
+                ${this.renderBtn()}
+                ${this.renderTagsBlock()}
+                ${this.renderReadOnlyCheckBox()}
                     
-                </div>`
+             </div>`
+        )
     }
 }
 
-const tags = new TagsComponent();
+const crossImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Flat_cross_icon.svg/1200px-Flat_cross_icon.svg.png'
+const tags = new TagsComponent(crossImg, 'uniqueId');
+
 tags.mount(document.getElementById('root'));

@@ -3,9 +3,10 @@ class TagsComponent {
     crossImgUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Flat_cross_icon.svg/1200px-Flat_cross_icon.svg.png';
     componentBlock = null;
 
-    constructor(componentBlockId, initialTags = []) {
+    constructor(componentBlockId, initialTags = [], readOnly = false) {
         this.tags = initialTags;
         this.componentBlockId = componentBlockId;
+        this.readOnly = readOnly;
     }
 
     get getTags() {
@@ -55,7 +56,7 @@ class TagsComponent {
     }
 
     handleDeleteBtnClick(event) {
-        if (event.target.className === 'cross_img') {
+        if (event.target.className === 'cross_img' && !this.readOnly) {
             const tag = event.target.name;
             this.deleteTag(tag);
             this.renderTags();
@@ -63,10 +64,11 @@ class TagsComponent {
     }
 
     handleReadOnlyMode(event) {
-        this.changeReadOnlyMode(!!event.target.checked);
+        this.readOnly = !!event.target.checked;
+        this.disableButtons(this.readOnly);
     }
 
-    changeReadOnlyMode(mode) {
+    disableButtons(mode) {
         const btn = this.componentBlock.querySelector('.component_btn');
         const input = this.componentBlock.querySelector('.input');
 
@@ -77,7 +79,6 @@ class TagsComponent {
     listener() {
         const btn = this.componentBlock.querySelector('.component_btn');
         const readOnlyCheckBox = this.componentBlock.querySelector('#read_only');
-        console.log(btn, readOnlyCheckBox)
 
         readOnlyCheckBox.addEventListener('change', this.handleReadOnlyMode.bind(this));
         btn.addEventListener('click', this.handleAddBtnClick.bind(this));
